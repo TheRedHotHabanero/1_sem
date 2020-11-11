@@ -1,12 +1,16 @@
 #include <iostream>
+
 #include <cstdlib>
-#include <ctime>
+#include <cstring>
+#include <chrono>
 
 #include "n_2.h"
+#include "nlogn.h"
 
 using std::cin;
 using std::cout;
 using std::endl;
+using namespace std::chrono;
 
 void arr_filler(int* arr, int size)
 {
@@ -24,30 +28,63 @@ bool check_up(int* arr, int size)
   return true;
 }
 
+void print(int* arr, int size)
+{
+  for (int i = 0; i < size; ++i)
+    cout << arr[i] << " ";
+  cout << endl;
+}
+
 const int N = 10;
 
 int main()
 {
-  int mas[N] = {0};
+  cout << "name arr_len time(microsec)\n";
+  for (int i = 10; i <= 10000; i *= 10)
+  {
+    int arr_orig[i];
+    arr_filler(arr_orig, i);
 
-  arr_filler(mas, N);
+    int arr1[i], arr2[i], arr3[i],
+        arr4[i], arr5[i], arr6[i];
+    
+    size_t size = i * sizeof(int) / sizeof(char);
+    
+    memcpy(arr1, arr_orig, size);
+    memcpy(arr2, arr_orig, size);
+    memcpy(arr3, arr_orig, size);
+    memcpy(arr4, arr_orig, size);
+    memcpy(arr5, arr_orig, size);
+    memcpy(arr6, arr_orig, size);
+    
+    
+    auto begin = high_resolution_clock::now();
+    bubble(arr1, i);
+    auto end = high_resolution_clock::now();
 
-  for (int i = 0; i < N; ++i)
-    cout << mas[i] << " ";
-  cout << endl;
-  //-----------------------------------------------------
+    cout << "bubble " << i << " " << duration_cast<microseconds>(end - begin).count() << "\n";
 
-  bubble(mas, N);
+    begin = high_resolution_clock::now();
+    choice(arr2, i);
+    end = high_resolution_clock::now();
 
+    cout << "choice " << i << " " << duration_cast<microseconds>(end - begin).count() << "\n";
+
+    begin = high_resolution_clock::now();
+    insert(arr3, i);
+    end = high_resolution_clock::now();
+
+    cout << "insert " << i << " " << duration_cast<microseconds>(end - begin).count() << "\n";
+
+    // new sorts
+
+    cout << endl;
+  }
   // ----------------------------------------------------
-  for (int x = 0; x < N; ++x)
-    cout << mas[x] << " ";
-  cout << endl;
-
-  if (check_up(mas, N))
+  /*if (check_up(arr, N))
     cout << "ALL RIGHT, BOIIII\n";
   else
-    cout << "SORRY, U R WRONG(\n";
+    cout << "SORRY, U R WRONG(\n";*/
 
   return 0;
 }
