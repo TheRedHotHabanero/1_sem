@@ -52,7 +52,9 @@ bool push_back(subvector *qv, int d) //добав. элем. в конец не�
 int pop_back(subvector *qv) //удаление элем. с конца недовектора
 {
   assert(qv != nullptr);
-  assert(qv->top > 0);
+
+  if (qv->top == 0)
+    return 0;
 
   qv->top--;
   return qv->mas[qv->top];
@@ -101,7 +103,7 @@ void destructor(subvector *qv) //очистить всю исп. память, �
 
 //bool init_from_file(subvector *qv, char *filename); //инициализировать недовек. из файла, необязат задание
 
-
+/*
 int main()
 {
   int d = 9;
@@ -119,4 +121,4 @@ int main()
 
   destructor(&qv);
   return 0;
-}
+}*/
