@@ -54,6 +54,88 @@ void run_1(RenderWindow & window)
         window.close();
 
     //-----------------------------------------------! MOVING SIMBA!
+    //-----------------------------------------------! MOVING SIMBA!
+
+    if ((Keyboard::isKeyPressed(Keyboard::Right)))
+    {
+      CurrentFrame += 0.005 * time; //служит для прохождения по "кадрам".
+      // переменная доходит до трех, суммируя произведение времени
+      // и скорости. изменив 0.005 можно изменить скорость анимации
+
+      if (CurrentFrame > 7) CurrentFrame -= 7; // если пришли к третьему кадру - откидываемся назад.
+      simbasprite.setTextureRect(IntRect(38 * int(CurrentFrame), 180, 38, 38)); // проходимся по координатам Х.
+      // получается начинаем рисование с
+      // координаты Х равной 0,96,96*2,
+      // и опять 0
+      simbasprite.move(0.1 * time, 0);//происходит само движение персонажа вправо
+    }
+
+    if ((Keyboard::isKeyPressed(Keyboard::Left)))
+    {
+      CurrentFrame += 0.005 * time;
+      if (CurrentFrame > 7) CurrentFrame -= 7;
+      simbasprite.setTextureRect(IntRect(38 * int(CurrentFrame + 1), 180, -38, 38));
+      simbasprite.move(-0.1 * time, 0);
+
+    }
+
+    if ((Keyboard::isKeyPressed(Keyboard::Up)))
+    {
+      CurrentFrame += 0.005 * time;
+      if (CurrentFrame > 2) CurrentFrame -= 2;
+      simbasprite.setTextureRect(IntRect(30 * int(CurrentFrame), 240, 30, 30));
+      simbasprite.move(0, -0.1 * time);
+    }
+
+    if ((Keyboard::isKeyPressed(Keyboard::Down)))
+    {
+      CurrentFrame += 0.005 * time;
+      if (CurrentFrame > 2) CurrentFrame -= 2;
+      simbasprite.setTextureRect(IntRect(30 * int(CurrentFrame), 240, 30, 30));
+      simbasprite.move(0, 0.1 * time);
+    }
+    //----------------------------------------------------------------------
+
+
+    //-------------------------------------------------------------! MOVING KOVU!
+
+    if ((Keyboard::isKeyPressed(Keyboard::D)))
+    {
+      CurrentFrame += 0.005 * time;
+
+      if (CurrentFrame > 4) CurrentFrame -= 4;
+      kovusprite.setTextureRect(IntRect(41 * int(CurrentFrame), 100, 41, 27));
+      kovusprite.move(0.1 * time, 0);
+
+    }
+
+    if ((Keyboard::isKeyPressed(Keyboard::A)))
+    {
+      CurrentFrame += 0.005 * time;
+
+      if (CurrentFrame > 4) CurrentFrame -= 4;
+      kovusprite.setTextureRect(IntRect(41 * int(CurrentFrame + 1), 100, -41, 27));
+      kovusprite.move(-0.1 * time, 0);
+    }
+
+    if ((Keyboard::isKeyPressed(Keyboard::W)))
+    {
+
+      CurrentFrame += 0.005 * time;
+      if (CurrentFrame > 2) CurrentFrame -= 2;
+      kovusprite.setTextureRect(IntRect(37 * int(CurrentFrame), 36, 37, 26));
+      kovusprite.move(0, -0.1 * time);
+    }
+
+    if ((Keyboard::isKeyPressed(Keyboard::S)))
+    {
+      CurrentFrame += 0.005 * time;
+
+      if (CurrentFrame > 2) CurrentFrame -= 2;
+      kovusprite.setTextureRect(IntRect(37 * int(CurrentFrame), 36, 37, 26));
+      kovusprite.move(0, 0.1 * time);
+    }
+    //-------------------------------------------------------------------------------
 
 
 
