@@ -475,6 +475,11 @@ void run_about(RenderWindow & window)
 
 void menu(RenderWindow & window)
 {
+  Image     icon;               icon.loadFromFile("../Images/icon.jpg");
+                                window.setIcon(100, 70, icon.getPixelsPtr());
+
+  //------------------------------------------------------icon made
+
   Image     menubackground;     menubackground.loadFromFile("../Images/menu.jpg");
 
   Texture   menutexture;        menutexture.loadFromImage(menubackground);
