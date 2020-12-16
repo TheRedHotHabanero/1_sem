@@ -8,7 +8,219 @@ const int THIRD_LEVEL   = 3;
 const int INFO          = 4;
 const int EXIT          = 5;
 
-void run_1(RenderWindow & window)
+
+void control(Sprite& simbasprite, Sprite& kovusprite, float time, float CurrentFrame)
+{
+
+//-------------------------------------------------------------! MOVING SIMBA!
+
+
+  if ((Keyboard::isKeyPressed(Keyboard::Right)))
+  {
+    CurrentFrame += 0.005f * time;
+
+    if (CurrentFrame > 7) CurrentFrame -= 7;
+    simbasprite.setTextureRect(IntRect(47 * int(CurrentFrame), 245, 47, 47));
+
+    simbasprite.move(0.1f * time, 0);
+  }
+
+  if ((Keyboard::isKeyPressed(Keyboard::Left)))
+  {
+    CurrentFrame += 0.005f * time;
+    if (CurrentFrame > 7)
+      CurrentFrame -= 7;
+
+    simbasprite.setTextureRect(IntRect(47 * int(CurrentFrame + 1), 245, -47, 47));
+    simbasprite.move(-0.1f * time, 0);
+
+  }
+
+  if ((Keyboard::isKeyPressed(Keyboard::Up)))
+  {
+    CurrentFrame += 0.005f * time;
+    if (CurrentFrame > 2)
+      CurrentFrame -= 2;
+
+    simbasprite.setTextureRect(IntRect(43 * int(CurrentFrame), 330, 43, 43));
+    simbasprite.move(0, -0.1f * time);
+  }
+
+  if ((Keyboard::isKeyPressed(Keyboard::Down)))
+  {
+    CurrentFrame += 0.005f * time;
+
+    if (CurrentFrame > 2)
+      CurrentFrame -= 2;
+
+    simbasprite.setTextureRect(IntRect(330 * int(CurrentFrame), 330, 43, 43));
+    simbasprite.move(0, 0.1f * time);
+  }
+
+//----------------------------------------------------------------------
+
+
+//-------------------------------------------------------------! MOVING KOVU!
+
+
+  if ((Keyboard::isKeyPressed(Keyboard::D)))
+  {
+    CurrentFrame += 0.005f * time;
+
+    if (CurrentFrame > 6)
+      CurrentFrame -= 6;
+
+    kovusprite.setTextureRect(IntRect(62* int(CurrentFrame), 50, 62, 46));
+    kovusprite.move(0.1f * time, 0);
+
+  }
+
+  if ((Keyboard::isKeyPressed(Keyboard::A)))
+  {
+    CurrentFrame += 0.005f * time;
+
+    if (CurrentFrame > 6)
+      CurrentFrame -= 6;
+
+    kovusprite.setTextureRect(IntRect(62 * int(CurrentFrame + 1), 50, -62, 46));
+    kovusprite.move(-0.1f * time, 0);
+  }
+
+  if ((Keyboard::isKeyPressed(Keyboard::W)))
+  {
+
+    CurrentFrame += 0.005f * time;
+
+    if (CurrentFrame > 2)
+      CurrentFrame -= 2;
+
+    kovusprite.setTextureRect(IntRect(43 * int(CurrentFrame), 100, 43, 43));
+    kovusprite.move(0, -0.1f * time);
+  }
+
+  if ((Keyboard::isKeyPressed(Keyboard::S)))
+  {
+    CurrentFrame += 0.005f * time;
+
+    if (CurrentFrame > 2)
+      CurrentFrame -= 2;
+
+    kovusprite.setTextureRect(IntRect(43 * int(CurrentFrame), 100, 43, 43));
+    kovusprite.move(0, 0.1f * time);
+  }
+}
+
+//..................................................//
+//.................DRAWING MAP......................//
+//..................................................//
+
+
+void draw_map(Sprite& s_map, RenderWindow& window, Sprite& simbasprite, Sprite& kovusprite, sf::String TileMap[])
+{
+  for (int i = 0; i < HEIGHT_MAP; i++)
+    for (int j = 0; j < WIDTH_MAP; j++)
+    {
+      if (TileMap[i][j] == 's')
+        s_map.setTextureRect(IntRect(332, 0, 68, 65));
+
+      if (TileMap[i][j] == ' ')
+        s_map.setTextureRect(IntRect(255, 0, 73, 64));
+
+      if (TileMap[i][j] == 'l')
+        s_map.setTextureRect(IntRect(0, 0, 65, 70));
+
+      if (TileMap[i][j] == 'd')
+        s_map.setTextureRect(IntRect(195, 0, 58, 68));
+
+      if (TileMap[i][j] == 'h')
+        s_map.setTextureRect(IntRect(130, 0, 62, 62));
+
+      if (TileMap[i][j] == 'e')
+        s_map.setTextureRect(IntRect(0, 63, 70, 68));
+
+      if (TileMap[i][j] == 'a')
+        s_map.setTextureRect(IntRect(72, 62, 69, 30));
+
+      if (TileMap[i][j] == 'b')
+        s_map.setTextureRect(IntRect(403, 0, 66, 66));
+
+
+      s_map.setPosition((float)j * 32, (float)i * 32);
+      window.draw(s_map);
+    }
+
+  window.draw(simbasprite);
+  window.draw(kovusprite);
+  window.display();
+}
+
+
+//...........FIRST LEVEL................//
+
+void run_1(RenderWindow& window)
+{
+
+  Image map_image;      map_image.loadFromFile("../Images/first/map.png");
+
+  Texture map;          map.loadFromImage(map_image);
+
+  Sprite s_map;         s_map.setTexture(map);
+
+  //----------------------------------------------------! MAP!
+
+  Image simbaimg;       simbaimg.loadFromFile("../Images/first/simba.png");
+
+  Texture simbatexture; simbatexture.loadFromImage(simbaimg);
+
+  Sprite simbasprite;   simbasprite.setTexture(simbatexture);
+                        simbasprite.setTextureRect(IntRect(0, 25, 40, 53));
+                        simbasprite.setPosition(250, 250);
+
+//----------------------------------------------------! SIMBA!
+
+  Image kovuimg;        kovuimg.loadFromFile("../Images/first/kovu.png");
+
+  Texture kovutexture;  kovutexture.loadFromImage(kovuimg);
+
+  Sprite kovusprite;    kovusprite.setTexture(kovutexture);
+                        kovusprite.setTextureRect(IntRect(0, 200, 43, 53));
+                        kovusprite.setPosition(200, 200);
+
+//------------------------------------------------------! KOVU!
+
+  float CurrentFrame = 0;
+  Clock clock;
+
+  while (window.isOpen())
+  {
+    float time = clock.getElapsedTime().asMicroseconds();
+    clock.restart();
+    time = time / 800;
+
+    sf::Event event;
+    while (window.pollEvent(event))
+      if (event.type == sf::Event::Closed || Keyboard::isKeyPressed(Keyboard::Escape))
+        window.close();
+
+
+    //! Key processing()
+    control(simbasprite, kovusprite, time, CurrentFrame);
+
+    //-------------------------------------------------------------------------------
+
+    window.clear();
+
+    //! Draw map 1!
+
+    draw_map(s_map, window, simbasprite, kovusprite, TileMap1);
+  }
+}
+
+
+
+//...............SECOND LEVEL................//
+
+void run_2(RenderWindow& window)
 {
   Image map_image;      map_image.loadFromFile("../Images/first/map.png");
 
@@ -20,11 +232,11 @@ void run_1(RenderWindow & window)
 
   Image simbaimg;       simbaimg.loadFromFile("../Images/first/simba.png");
 
-  Texture simbatexture; simbatexture.loadFromImage(simbaimg);//передаем в файл объект Image
+  Texture simbatexture; simbatexture.loadFromImage(simbaimg);
 
-  Sprite simbasprite;   simbasprite.setTexture(simbatexture);//передаём в него объект Texture
-                        simbasprite.setTextureRect(IntRect(0, 180, 38, 38));//получили прямоугольник
-                        simbasprite.setPosition(250, 250);//задаем начальные координаты появления спрайта
+  Sprite simbasprite;   simbasprite.setTexture(simbatexture);
+                        simbasprite.setTextureRect(IntRect(0, 180, 38, 38));
+                        simbasprite.setPosition(250, 250);
 
   //----------------------------------------------------! SIMBA!
 
@@ -33,9 +245,8 @@ void run_1(RenderWindow & window)
   Texture kovutexture;  kovutexture.loadFromImage(kovuimg);
 
   Sprite kovusprite;    kovusprite.setTexture(kovutexture);
-                        kovusprite.setTextureRect(IntRect(0, 0, 38, 38));// получили нужный нам
-                                                                         // прямоугольник с котом
-                        kovusprite.setPosition(200, 200);//задаем начальные координаты появления спрайта
+                        kovusprite.setTextureRect(IntRect(0, 0, 38, 38));
+                        kovusprite.setPosition(200, 200);
 
   //------------------------------------------------------! KOVU!
 
@@ -44,496 +255,112 @@ void run_1(RenderWindow & window)
 
   while (window.isOpen())
   {
-    float time = clock.getElapsedTime().asMicroseconds(); //дать прошедшее время в микросекундах
-    clock.restart();                                      //перезагружает время
-    time = time / 600;                                    //скорость игры
+    float time = clock.getElapsedTime().asMicroseconds();
+    clock.restart();
+    time = time / 800;
 
     sf::Event event;
     while (window.pollEvent(event))
       if (event.type == sf::Event::Closed || Keyboard::isKeyPressed(Keyboard::Escape))
         window.close();
 
-    //-----------------------------------------------! MOVING SIMBA!
-    //-----------------------------------------------! MOVING SIMBA!
 
-    if ((Keyboard::isKeyPressed(Keyboard::Right)))
-    {
-      CurrentFrame += 0.005 * time; //служит для прохождения по "кадрам".
-      // переменная доходит до трех, суммируя произведение времени
-      // и скорости. изменив 0.005 можно изменить скорость анимации
+    //! Key processing()
+    control(simbasprite, kovusprite, time, CurrentFrame);
 
-      if (CurrentFrame > 7) CurrentFrame -= 7; // если пришли к третьему кадру - откидываемся назад.
-      simbasprite.setTextureRect(IntRect(38 * int(CurrentFrame), 180, 38, 38)); // проходимся по координатам Х.
-      // получается начинаем рисование с
-      // координаты Х равной 0,96,96*2,
-      // и опять 0
-      simbasprite.move(0.1 * time, 0);//происходит само движение персонажа вправо
-    }
-
-    if ((Keyboard::isKeyPressed(Keyboard::Left)))
-    {
-      CurrentFrame += 0.005 * time;
-      if (CurrentFrame > 7) CurrentFrame -= 7;
-      simbasprite.setTextureRect(IntRect(38 * int(CurrentFrame + 1), 180, -38, 38));
-      simbasprite.move(-0.1 * time, 0);
-
-    }
-
-    if ((Keyboard::isKeyPressed(Keyboard::Up)))
-    {
-      CurrentFrame += 0.005 * time;
-      if (CurrentFrame > 2) CurrentFrame -= 2;
-      simbasprite.setTextureRect(IntRect(30 * int(CurrentFrame), 240, 30, 30));
-      simbasprite.move(0, -0.1 * time);
-    }
-
-    if ((Keyboard::isKeyPressed(Keyboard::Down)))
-    {
-      CurrentFrame += 0.005 * time;
-      if (CurrentFrame > 2) CurrentFrame -= 2;
-      simbasprite.setTextureRect(IntRect(30 * int(CurrentFrame), 240, 30, 30));
-      simbasprite.move(0, 0.1 * time);
-    }
-    //----------------------------------------------------------------------
-
-
-    //-------------------------------------------------------------! MOVING KOVU!
-
-    if ((Keyboard::isKeyPressed(Keyboard::D)))
-    {
-      CurrentFrame += 0.005 * time;
-
-      if (CurrentFrame > 4) CurrentFrame -= 4;
-      kovusprite.setTextureRect(IntRect(41 * int(CurrentFrame), 100, 41, 27));
-      kovusprite.move(0.1 * time, 0);
-
-    }
-
-    if ((Keyboard::isKeyPressed(Keyboard::A)))
-    {
-      CurrentFrame += 0.005 * time;
-
-      if (CurrentFrame > 4) CurrentFrame -= 4;
-      kovusprite.setTextureRect(IntRect(41 * int(CurrentFrame + 1), 100, -41, 27));
-      kovusprite.move(-0.1 * time, 0);
-    }
-
-    if ((Keyboard::isKeyPressed(Keyboard::W)))
-    {
-
-      CurrentFrame += 0.005 * time;
-      if (CurrentFrame > 2) CurrentFrame -= 2;
-      kovusprite.setTextureRect(IntRect(37 * int(CurrentFrame), 36, 37, 26));
-      kovusprite.move(0, -0.1 * time);
-    }
-
-    if ((Keyboard::isKeyPressed(Keyboard::S)))
-    {
-      CurrentFrame += 0.005 * time;
-
-      if (CurrentFrame > 2) CurrentFrame -= 2;
-      kovusprite.setTextureRect(IntRect(37 * int(CurrentFrame), 36, 37, 26));
-      kovusprite.move(0, 0.1 * time);
-    }
     //-------------------------------------------------------------------------------
-
-
 
     window.clear();
 
-    for (int i = 0; i < HEIGHT_MAP1; i++)
-      for (int j = 0; j < WIDTH_MAP1; j++)
-      {
-        if (TileMap1[i][j] == 's') s_map.setTextureRect(IntRect(255, 0, 334, 70)); //рисуем 1й квадратик
-        if (TileMap1[i][j] == ' ') s_map.setTextureRect(IntRect(334, 0, 400, 70));//рисуем 2й квадратик
-        if (TileMap1[i][j] == '0') s_map.setTextureRect(IntRect(0, 0, 70, 70));//рисуем 3й квадратик
-        if (TileMap1[i][j] == 'b') s_map.setTextureRect(IntRect(0, 0, 70, 70));//ставим блок лабиринта
+    //! Draw map 2!
 
-
-        s_map.setPosition(j * 32, i * 32);// по сути раскидывает квадратики, превращая в карту.
-                                          // то есть задает каждому из них позицию. если убрать,
-                                          // то вся карта нарисуется в одном квадрате 32*32 и
-                                          // мы увидим один квадрат.
-        window.draw(s_map);
-      }
-
-    window.draw(simbasprite);
-    window.draw(kovusprite);
-    window.display();
+    draw_map(s_map, window, simbasprite, kovusprite, TileMap2);
   }
+
 }
 
+//...........THIRD LEVEL............//
 
-
-
-
-
-
-
-
-
-
-
-void run_2(RenderWindow & window)
+void run_3(RenderWindow& window)
 {
-  Image map_image;
-  map_image.loadFromFile("../Images/first/map.png");
+  Image map_image;      map_image.loadFromFile("../Images/first/map.png");
 
-  Texture map;
-  map.loadFromImage(map_image);
+  Texture map;          map.loadFromImage(map_image);
 
-  Sprite s_map;
-  s_map.setTexture(map);
+  Sprite s_map;         s_map.setTexture(map);
 
   //----------------------------------------------------! MAP!
 
-  Image simbaimg;
-  simbaimg.loadFromFile("../Images/first/simba.png");
+  Image   simbaimg;     simbaimg.loadFromFile("../Images/first/simba.png");
 
-  Texture simbatexture;
-  simbatexture.loadFromImage(simbaimg);//передаем в файл объект Image
+  Texture simbatexture; simbatexture.loadFromImage(simbaimg);
 
-  Sprite simbasprite;
-  simbasprite.setTexture(simbatexture);//передаём в него объект Texture
-  simbasprite.setTextureRect(IntRect(0, 180, 38, 38));//получили прямоугольник
-  simbasprite.setPosition(250, 250);//задаем начальные координаты появления спрайта
+  Sprite  simbasprite;  simbasprite.setTexture(simbatexture);
+                        simbasprite.setTextureRect(IntRect(0, 180, 38, 38));
+                        simbasprite.setPosition(250, 250);
 
-  //----------------------------------------------------! SIMBA!
+//----------------------------------------------------! SIMBA!
 
-  Image kovuimg;
-  kovuimg.loadFromFile("../Images/first/kovu.png");
+  Image   kovuimg;      kovuimg.loadFromFile("../Images/first/kovu.png");
 
-  Texture kovutexture;
-  kovutexture.loadFromImage(kovuimg);
+  Texture kovutexture;  kovutexture.loadFromImage(kovuimg);
 
-  Sprite kovusprite;
-  kovusprite.setTexture(kovutexture);
-  kovusprite.setTextureRect(IntRect(0, 0, 38, 38));// получили нужный нам
-  // прямоугольник с котом
-  kovusprite.setPosition(200, 200);//задаем начальные координаты появления спрайта
-
-  //------------------------------------------------------! KOVU!
+  Sprite  kovusprite;   kovusprite.setTexture(kovutexture);
+                        kovusprite.setTextureRect(IntRect(0, 0, 38, 38));
+                        kovusprite.setPosition(200, 200);
 
   float CurrentFrame = 0;
   Clock clock;
 
+//------------------------------------------------------! KOVU!
+
   while (window.isOpen())
   {
-    float time = clock.getElapsedTime().asMicroseconds(); //дать прошедшее время в микросекундах
-    clock.restart();                                      //перезагружает время
-    time = time / 600;                                    //скорость игры
+
+    float time = clock.getElapsedTime().asMicroseconds();
+    clock.restart();
+    time = time / 800;
 
     sf::Event event;
     while (window.pollEvent(event))
       if (event.type == sf::Event::Closed || Keyboard::isKeyPressed(Keyboard::Escape))
         window.close();
 
-    //-----------------------------------------------! MOVING SIMBA!
 
-    if ((Keyboard::isKeyPressed(Keyboard::Right)))
-    {
-      CurrentFrame += 0.005 * time; //служит для прохождения по "кадрам".
-      // переменная доходит до трех, суммируя произведение времени
-      // и скорости. изменив 0.005 можно изменить скорость анимации
+    //! Key processing()
+    control(simbasprite, kovusprite, time, CurrentFrame);
 
-      if (CurrentFrame > 7) CurrentFrame -= 7; // если пришли к третьему кадру - откидываемся назад.
-      simbasprite.setTextureRect(IntRect(38 * int(CurrentFrame), 180, 38, 38)); // проходимся по координатам Х.
-      // получается начинаем рисование с
-      // координаты Х равной 0,96,96*2,
-      // и опять 0
-      simbasprite.move(0.1 * time, 0);//происходит само движение персонажа вправо
-    }
-
-    if ((Keyboard::isKeyPressed(Keyboard::Left)))
-    {
-      CurrentFrame += 0.005 * time;
-      if (CurrentFrame > 7) CurrentFrame -= 7;
-      simbasprite.setTextureRect(IntRect(38 * int(CurrentFrame + 1), 180, -38, 38));
-      simbasprite.move(-0.1 * time, 0);
-
-    }
-
-    if ((Keyboard::isKeyPressed(Keyboard::Up)))
-    {
-      CurrentFrame += 0.005 * time;
-      if (CurrentFrame > 2) CurrentFrame -= 2;
-      simbasprite.setTextureRect(IntRect(30 * int(CurrentFrame), 240, 30, 30));
-      simbasprite.move(0, -0.1 * time);
-    }
-
-    if ((Keyboard::isKeyPressed(Keyboard::Down)))
-    {
-      CurrentFrame += 0.005 * time;
-      if (CurrentFrame > 2) CurrentFrame -= 2;
-      simbasprite.setTextureRect(IntRect(30 * int(CurrentFrame), 240, 30, 30));
-      simbasprite.move(0, 0.1 * time);
-    }
-    //----------------------------------------------------------------------
-
-
-    //-------------------------------------------------------------! MOVING KOVU!
-
-    if ((Keyboard::isKeyPressed(Keyboard::D)))
-    {
-      CurrentFrame += 0.005 * time;
-
-      if (CurrentFrame > 4) CurrentFrame -= 4;
-      kovusprite.setTextureRect(IntRect(41 * int(CurrentFrame), 100, 41, 27));
-      kovusprite.move(0.1 * time, 0);
-
-    }
-
-    if ((Keyboard::isKeyPressed(Keyboard::A)))
-    {
-      CurrentFrame += 0.005 * time;
-
-      if (CurrentFrame > 4) CurrentFrame -= 4;
-      kovusprite.setTextureRect(IntRect(41 * int(CurrentFrame + 1), 100, -41, 27));
-      kovusprite.move(-0.1 * time, 0);
-    }
-
-    if ((Keyboard::isKeyPressed(Keyboard::W)))
-    {
-
-      CurrentFrame += 0.005 * time;
-      if (CurrentFrame > 2) CurrentFrame -= 2;
-      kovusprite.setTextureRect(IntRect(37 * int(CurrentFrame), 36, 37, 26));
-      kovusprite.move(0, -0.1 * time);
-    }
-
-    if ((Keyboard::isKeyPressed(Keyboard::S)))
-    {
-      CurrentFrame += 0.005 * time;
-
-      if (CurrentFrame > 2) CurrentFrame -= 2;
-      kovusprite.setTextureRect(IntRect(37 * int(CurrentFrame), 36, 37, 26));
-      kovusprite.move(0, 0.1 * time);
-    }
     //-------------------------------------------------------------------------------
 
     window.clear();
 
-    for (int i = 0; i < HEIGHT_MAP2; i++)
-      for (int j = 0; j < WIDTH_MAP2; j++)
-      {
-        if (TileMap2[i][j] == 's') s_map.setTextureRect(IntRect(255, 0, 334, 70)); //рисуем 1й квадратик
-        if (TileMap2[i][j] == ' ') s_map.setTextureRect(IntRect(334, 0, 400, 70));//рисуем 2й квадратик
-        if (TileMap2[i][j] == '0') s_map.setTextureRect(IntRect(0, 0, 70, 70));//рисуем 3й квадратик
-        if (TileMap2[i][j] == 'b') s_map.setTextureRect(IntRect(0, 0, 70, 70));//ставим блок лабиринта
+    //! Draw map 3!
 
-
-        s_map.setPosition(j * 32, i * 32);// по сути раскидывает квадратики, превращая в карту.
-        // то есть задает каждому из них позицию. если убрать,
-        // то вся карта нарисуется в одном квадрате 32*32 и
-        // мы увидим один квадрат.
-        window.draw(s_map);
-      }
-
-    window.draw(simbasprite);
-    window.draw(kovusprite);
-    window.display();
+    draw_map(s_map, window, simbasprite, kovusprite, TileMap3);
   }
+
 }
 
+//..................................................//
+//......................ABOUT.......................//
+//..................................................//
 
 
-
-
-
-
-
-
-
-
-
-void run_3(RenderWindow & window)
+void run_about(RenderWindow& window)
 {
-  Image map_image;
-  map_image.loadFromFile("../Images/first/map.png");
+  Image     back;             back.loadFromFile("../Images/info/back.jpg");
 
-  Texture map;
-  map.loadFromImage(map_image);
+  Texture   backtexture;      backtexture.loadFromImage(back);
 
-  Sprite s_map;
-  s_map.setTexture(map);
-
-  //----------------------------------------------------! MAP!
-
-  Image simbaimg;
-  simbaimg.loadFromFile("../Images/first/simba.png");
-
-  Texture simbatexture;
-  simbatexture.loadFromImage(simbaimg);//передаем в файл объект Image
-
-  Sprite simbasprite;
-  simbasprite.setTexture(simbatexture);//передаём в него объект Texture
-  simbasprite.setTextureRect(IntRect(0, 180, 38, 38));//получили прямоугольник
-  simbasprite.setPosition(250, 250);//задаем начальные координаты появления спрайта
-
-  //----------------------------------------------------! SIMBA!
-
-  Image kovuimg;
-  kovuimg.loadFromFile("../Images/first/kovu.png");
-
-  Texture kovutexture;
-  kovutexture.loadFromImage(kovuimg);
-
-  Sprite kovusprite;
-  kovusprite.setTexture(kovutexture);
-  kovusprite.setTextureRect(IntRect(0, 0, 38, 38));// получили нужный нам
-  // прямоугольник с котом
-  kovusprite.setPosition(200, 200);//задаем начальные координаты появления спрайта
-
-  //------------------------------------------------------! KOVU!
-
-  float CurrentFrame = 0;
-  Clock clock;
-
-  while (window.isOpen())
-  {
-    float time = clock.getElapsedTime().asMicroseconds(); //дать прошедшее время в микросекундах
-    clock.restart();                                      //перезагружает время
-    time = time / 600;                                    //скорость игры
-
-    sf::Event event;
-    while (window.pollEvent(event))
-      if (event.type == sf::Event::Closed || Keyboard::isKeyPressed(Keyboard::Escape))
-        window.close();
-
-    //-----------------------------------------------! MOVING SIMBA!
-
-    if ((Keyboard::isKeyPressed(Keyboard::Right)))
-    {
-      CurrentFrame += 0.005 * time; //служит для прохождения по "кадрам".
-      // переменная доходит до трех, суммируя произведение времени
-      // и скорости. изменив 0.005 можно изменить скорость анимации
-
-      if (CurrentFrame > 7) CurrentFrame -= 7; // если пришли к третьему кадру - откидываемся назад.
-      simbasprite.setTextureRect(IntRect(38 * int(CurrentFrame), 180, 38, 38)); // проходимся по координатам Х.
-      // получается начинаем рисование с
-      // координаты Х равной 0,96,96*2,
-      // и опять 0
-      simbasprite.move(0.1 * time, 0);//происходит само движение персонажа вправо
-    }
-
-    if ((Keyboard::isKeyPressed(Keyboard::Left)))
-    {
-      CurrentFrame += 0.005 * time;
-      if (CurrentFrame > 7) CurrentFrame -= 7;
-      simbasprite.setTextureRect(IntRect(38 * int(CurrentFrame + 1), 180, -38, 38));
-      simbasprite.move(-0.1 * time, 0);
-
-    }
-
-    if ((Keyboard::isKeyPressed(Keyboard::Up)))
-    {
-      CurrentFrame += 0.005 * time;
-      if (CurrentFrame > 2) CurrentFrame -= 2;
-      simbasprite.setTextureRect(IntRect(30 * int(CurrentFrame), 240, 30, 30));
-      simbasprite.move(0, -0.1 * time);
-    }
-
-    if ((Keyboard::isKeyPressed(Keyboard::Down)))
-    {
-      CurrentFrame += 0.005 * time;
-      if (CurrentFrame > 2) CurrentFrame -= 2;
-      simbasprite.setTextureRect(IntRect(30 * int(CurrentFrame), 240, 30, 30));
-      simbasprite.move(0, 0.1 * time);
-    }
-    //----------------------------------------------------------------------
-
-
-    //-------------------------------------------------------------! MOVING KOVU!
-
-    if ((Keyboard::isKeyPressed(Keyboard::D)))
-    {
-      CurrentFrame += 0.005 * time;
-
-      if (CurrentFrame > 4) CurrentFrame -= 4;
-      kovusprite.setTextureRect(IntRect(41 * int(CurrentFrame), 100, 41, 27));
-      kovusprite.move(0.1 * time, 0);
-
-    }
-
-    if ((Keyboard::isKeyPressed(Keyboard::A)))
-    {
-      CurrentFrame += 0.005 * time;
-
-      if (CurrentFrame > 4) CurrentFrame -= 4;
-      kovusprite.setTextureRect(IntRect(41 * int(CurrentFrame + 1), 100, -41, 27));
-      kovusprite.move(-0.1 * time, 0);
-    }
-
-    if ((Keyboard::isKeyPressed(Keyboard::W)))
-    {
-
-      CurrentFrame += 0.005 * time;
-      if (CurrentFrame > 2) CurrentFrame -= 2;
-      kovusprite.setTextureRect(IntRect(37 * int(CurrentFrame), 36, 37, 26));
-      kovusprite.move(0, -0.1 * time);
-    }
-
-    if ((Keyboard::isKeyPressed(Keyboard::S)))
-    {
-      CurrentFrame += 0.005 * time;
-
-      if (CurrentFrame > 2) CurrentFrame -= 2;
-      kovusprite.setTextureRect(IntRect(37 * int(CurrentFrame), 36, 37, 26));
-      kovusprite.move(0, 0.1 * time);
-    }
-    //-------------------------------------------------------------------------------
-
-    window.clear();
-
-    for (int i = 0; i < HEIGHT_MAP3; i++)
-      for (int j = 0; j < WIDTH_MAP3; j++)
-      {
-        if (TileMap3[i][j] == 's') s_map.setTextureRect(IntRect(255, 0, 334, 70)); //рисуем 1й квадратик
-        if (TileMap3[i][j] == ' ') s_map.setTextureRect(IntRect(334, 0, 400, 70));//рисуем 2й квадратик
-        if (TileMap3[i][j] == '0') s_map.setTextureRect(IntRect(0, 0, 70, 70));//рисуем 3й квадратик
-        if (TileMap3[i][j] == 'b') s_map.setTextureRect(IntRect(0, 0, 70, 70));//ставим блок лабиринта
-
-
-        s_map.setPosition(j * 32, i * 32);// по сути раскидывает квадратики, превращая в карту.
-        // то есть задает каждому из них позицию. если убрать,
-        // то вся карта нарисуется в одном квадрате 32*32 и
-        // мы увидим один квадрат.
-        window.draw(s_map);
-      }
-
-    window.draw(simbasprite);
-    window.draw(kovusprite);
-    window.display();
-  }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-void run_about(RenderWindow & window)
-{
-  Image     back;            back.loadFromFile("../Images/info/back.jpg");
-
-  Texture   backtexture;     backtexture.loadFromImage(back);
-
-  Sprite    backsprite;      backsprite.setTexture(backtexture);
-                             backsprite.setPosition(0, 0);
+  Sprite    backsprite;       backsprite.setTexture(backtexture);
+                              backsprite.setPosition(0, 0);
   //------------------------------------------------------background
-  Image     text;            text.loadFromFile("../Images/info/Text.jpg");
+  Image     text;             text.loadFromFile("../Images/info/Text.jpg");
 
-  Texture   texttexture;     texttexture.loadFromImage(text);
+  Texture   texttexture;      texttexture.loadFromImage(text);
 
-  Sprite    textsprite;      textsprite.setTexture(texttexture);
-                             textsprite.setPosition(50, 50);
+  Sprite    textsprite;       textsprite.setTexture(texttexture);
+                              textsprite.setPosition(50, 50);
   //-------------------------------------------------------text
 
   while (window.isOpen())
@@ -555,12 +382,17 @@ void run_about(RenderWindow & window)
 }
 
 
-void menu(RenderWindow & window)
+//..................................................//
+//.......................MENU.......................//
+//..................................................//
+
+
+void menu(RenderWindow& window)
 {
   Image     icon;               icon.loadFromFile("../Images/icon.jpg");
                                 window.setIcon(100, 70, icon.getPixelsPtr());
 
-  //------------------------------------------------------icon made
+  //-----------------------------------------------------icon made
 
   Image     menubackground;     menubackground.loadFromFile("../Images/menu.jpg");
 
@@ -568,6 +400,7 @@ void menu(RenderWindow & window)
 
   Sprite    menusprite;         menusprite.setTexture(menutexture);
                                 menusprite.setPosition(0, 0);
+
   //-------------------------------------------------background made
 
   Image     level1;             level1.loadFromFile("../Images/level1.png");
@@ -613,7 +446,6 @@ void menu(RenderWindow & window)
   Sprite    infosprite;     infosprite.setTexture(infotexture);
                             infosprite.setPosition(1100, 10);
 
-
   //-------------------------------------------------about made
 
   while (window.isOpen())
@@ -627,18 +459,18 @@ void menu(RenderWindow & window)
 
     //--------------------------------------------making color when aiming
 
-    if (IntRect(325, 375, 235, 129).contains(Mouse::getPosition(window))){level1sprite.setColor(Color::Green); menuNum = FIRST_LEVEL;}
-    if (IntRect(625, 375, 231, 127).contains(Mouse::getPosition(window))){level2sprite.setColor(Color::Green); menuNum = SECOND_LEVEL;}
-    if (IntRect(325, 520, 231, 126).contains(Mouse::getPosition(window))){level3sprite.setColor(Color::Green); menuNum = THIRD_LEVEL;}
-    if (IntRect(1100, 10, 90,   76).contains(Mouse::getPosition(window))){   infosprite.setColor(Color::Blue); menuNum = INFO;}
-    if (IntRect(625, 520, 231, 126).contains(Mouse::getPosition(window))){exitgamesprite.setColor(Color::Red); menuNum = EXIT;}
+    if (IntRect(325, 375, 235, 129).contains(Mouse::getPosition(window))) { level1sprite.setColor(Color::Green); menuNum = FIRST_LEVEL; }
+    if (IntRect(625, 375, 231, 127).contains(Mouse::getPosition(window))) { level2sprite.setColor(Color::Green); menuNum = SECOND_LEVEL; }
+    if (IntRect(325, 520, 231, 126).contains(Mouse::getPosition(window))) { level3sprite.setColor(Color::Green); menuNum = THIRD_LEVEL; }
+    if (IntRect(1100, 10, 90, 76).contains(Mouse::getPosition(window))) { infosprite.setColor(Color::Blue); menuNum = INFO; }
+    if (IntRect(625, 520, 231, 126).contains(Mouse::getPosition(window))) { exitgamesprite.setColor(Color::Red); menuNum = EXIT; }
 
     //-------------------------------------------clearing color when out
-    if (!IntRect(325, 375, 235, 129).contains(Mouse::getPosition(window))){  level1sprite.setColor(Color::White);}
-    if (!IntRect(625, 375, 231, 127).contains(Mouse::getPosition(window))){  level2sprite.setColor(Color::White);}
-    if (!IntRect(325, 520, 231, 126).contains(Mouse::getPosition(window))){  level3sprite.setColor(Color::White);}
-    if (!IntRect(1100, 10, 90,   76).contains(Mouse::getPosition(window))){    infosprite.setColor(Color::White);}
-    if (!IntRect(625, 520, 231, 126).contains(Mouse::getPosition(window))){exitgamesprite.setColor(Color::White);}
+    if (!IntRect(325, 375, 235, 129).contains(Mouse::getPosition(window))) { level1sprite.setColor(Color::White); }
+    if (!IntRect(625, 375, 231, 127).contains(Mouse::getPosition(window))) { level2sprite.setColor(Color::White); }
+    if (!IntRect(325, 520, 231, 126).contains(Mouse::getPosition(window))) { level3sprite.setColor(Color::White); }
+    if (!IntRect(1100, 10, 90, 76).contains(Mouse::getPosition(window))) { infosprite.setColor(Color::White); }
+    if (!IntRect(625, 520, 231, 126).contains(Mouse::getPosition(window))) { exitgamesprite.setColor(Color::White); }
 
 
     if (Mouse::isButtonPressed(Mouse::Left))
@@ -650,7 +482,7 @@ void menu(RenderWindow & window)
                             run_1(new_window);
                             break;                                                                           }
 
-        case SECOND_LEVEL:{ RenderWindow new_window(sf::VideoMode(1200, 675), "The Lion King Maze. Level 2");
+        case SECOND_LEVEL: { RenderWindow new_window(sf::VideoMode(1200, 675), "The Lion King Maze. Level 2");
                             window.close();
                             run_2(new_window);
                             break;                                                                           }
@@ -660,7 +492,7 @@ void menu(RenderWindow & window)
                             run_3(new_window);
                             break;                                                                           }
 
-        case INFO:        { RenderWindow new_window(sf::VideoMode(1600, 900), "The Lion King Maze Info");
+        case INFO: { RenderWindow new_window(sf::VideoMode(1600, 900), "The Lion King Maze Info");
                             window.close();
                             run_about(new_window);
                             break;                                                                           }
@@ -688,12 +520,9 @@ void menu(RenderWindow & window)
 }
 
 
-
-
-
-
 int main()
 {
+
   RenderWindow window(VideoMode(1200, 675), "The Lion King Maze");
   menu(window);
 
