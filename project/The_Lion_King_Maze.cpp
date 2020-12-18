@@ -8,13 +8,39 @@ const int THIRD_LEVEL   = 3;
 const int INFO          = 4;
 const int EXIT          = 5;
 
+const int RIGHT         = 6;
+const int LEFT          = 7;
+const int UP            = 8;
+const int DOWN          = 9;
 
-void control(Sprite& simbasprite, Sprite& kovusprite, float time, float CurrentFrame)
+int direct_simba( )
 {
+  if (Keyboard::isKeyPressed(Keyboard::Right))
+    return RIGHT;
+  if (Keyboard::isKeyPressed(Keyboard::Left))
+    return LEFT;
+  if (Keyboard::isKeyPressed(Keyboard::Up))
+    return UP;
+  if (Keyboard::isKeyPressed(Keyboard::Down))
+    return DOWN;
+}
 
-//-------------------------------------------------------------! MOVING SIMBA!
+int direct_kovu( )
+{
+  if (Keyboard::isKeyPressed(Keyboard::D))
+    return RIGHT;
+  if (Keyboard::isKeyPressed(Keyboard::A))
+    return LEFT;
+  if (Keyboard::isKeyPressed(Keyboard::W))
+    return UP;
+  if (Keyboard::isKeyPressed(Keyboard::S))
+    return DOWN;
+}
 
 
+
+void control_simba(Sprite& simbasprite, float time, float CurrentFrame, sf::String TileMap[])
+{
   if ((Keyboard::isKeyPressed(Keyboard::Right)))
   {
     CurrentFrame += 0.005f * time;
@@ -56,13 +82,32 @@ void control(Sprite& simbasprite, Sprite& kovusprite, float time, float CurrentF
     simbasprite.setTextureRect(IntRect(330 * int(CurrentFrame), 330, 43, 43));
     simbasprite.move(0, 0.1f * time);
   }
+  for (int i = 0; i < WIDTH_MAP; ++i)
+    for (int j = 0 ; j < HEIGHT_MAP; ++j)
+    {
+      if (TileMap[i][j] == 'b')
+      {
+        int direction = direct_simba();
 
-//----------------------------------------------------------------------
+        if (direction == DOWN)//если мы шли вниз,
+          simbasprite.move(0.1f * time, 0);//то стопорим координату игрек персонажа. сначала получаем координату нашего квадратика на карте(стены) и затем вычитаем из высоты спрайта персонажа.
+        if (direction == UP)
+          simbasprite.move(0.1f * time, 0);//аналогично с ходьбой вверх. dy<0, значит мы идем вверх (вспоминаем координаты паинта)
+        if (direction == RIGHT)
+          simbasprite.move(0, 0.1f* time);//если идем вправо, то координата Х равна стена (символ 0) минус ширина персонажа
+        if (direction == LEFT)
+          simbasprite.move(0, 0.1f * time);//аналогично идем влево
+      }
 
+      if (TileMap[i][j] == 'e')
+        TileMap[i][j] = 's'; //ИСПРАВИТЬ ТУТ НА ВЕРТ ЛАПЫ
+      if (TileMap[i][j] == 'a')
+        TileMap[i][j] = 's'; //ИСПРАВИТЬ ТУТ НА ГОРИЗОНТ ЛАПЫ
+    }
+}
 
-//-------------------------------------------------------------! MOVING KOVU!
-
-
+void control_kovu(Sprite& kovusprite, float time, float CurrentFrame, sf::String TileMap[])
+{
   if ((Keyboard::isKeyPressed(Keyboard::D)))
   {
     CurrentFrame += 0.005f * time;
@@ -108,42 +153,47 @@ void control(Sprite& simbasprite, Sprite& kovusprite, float time, float CurrentF
     kovusprite.setTextureRect(IntRect(43 * int(CurrentFrame), 100, 43, 43));
     kovusprite.move(0, 0.1f * time);
   }
+
+  for (int i = 0; i < WIDTH_MAP; ++i)
+    for (int j = 0 ; j < HEIGHT_MAP; ++j)
+    {
+      if (TileMap[i][j] == 'b')
+      {
+        int direction = direct_kovu();
+
+        if (direction == DOWN)//если мы шли вниз,
+          kovusprite.move(0.1f * time, 0);//то стопорим координату игрек персонажа. сначала получаем координату нашего квадратика на карте(стены) и затем вычитаем из высоты спрайта персонажа.
+        if (direction == UP)
+          kovusprite.move(0.1f * time, 0);//аналогично с ходьбой вверх. dy<0, значит мы идем вверх (вспоминаем координаты паинта)
+        if (direction == RIGHT)
+          kovusprite.move(0, 0.1f * time);//если идем вправо, то координата Х равна стена (символ 0) минус ширина персонажа
+        if (direction == LEFT)
+          kovusprite.move(0, 0.1f* time);//аналогично идем влево
+      }
+
+      if (TileMap[i][j] == 'e')
+        TileMap[i][j] = 's'; //ИСПРАВИТЬ ТУТ НА ВЕРТ ЛАПЫ
+      if (TileMap[i][j] == 'a')
+        TileMap[i][j] = 's'; //ИСПРАВИТЬ ТУТ НА ГОРИЗОНТ ЛАПЫ
+    }
 }
 
-//..................................................//
-//.................DRAWING MAP......................//
-//..................................................//
 
+//.................DRAWING MAP......................//
 
 void draw_map(Sprite& s_map, RenderWindow& window, Sprite& simbasprite, Sprite& kovusprite, sf::String TileMap[])
 {
   for (int i = 0; i < HEIGHT_MAP; i++)
     for (int j = 0; j < WIDTH_MAP; j++)
     {
-      if (TileMap[i][j] == 's')
-        s_map.setTextureRect(IntRect(332, 0, 68, 65));
-
-      if (TileMap[i][j] == ' ')
-        s_map.setTextureRect(IntRect(255, 0, 73, 64));
-
-      if (TileMap[i][j] == 'l')
-        s_map.setTextureRect(IntRect(0, 0, 65, 70));
-
-      if (TileMap[i][j] == 'd')
-        s_map.setTextureRect(IntRect(195, 0, 58, 68));
-
-      if (TileMap[i][j] == 'h')
-        s_map.setTextureRect(IntRect(130, 0, 62, 62));
-
-      if (TileMap[i][j] == 'e')
-        s_map.setTextureRect(IntRect(0, 63, 70, 68));
-
-      if (TileMap[i][j] == 'a')
-        s_map.setTextureRect(IntRect(72, 62, 69, 30));
-
-      if (TileMap[i][j] == 'b')
-        s_map.setTextureRect(IntRect(403, 0, 66, 66));
-
+      if (TileMap[i][j] == 's') s_map.setTextureRect(IntRect(332, 0, 68, 65));
+      if (TileMap[i][j] == ' ') s_map.setTextureRect(IntRect(255, 0, 73, 64));
+      if (TileMap[i][j] == 'l') s_map.setTextureRect(IntRect(0, 0, 65, 70));
+      if (TileMap[i][j] == 'd') s_map.setTextureRect(IntRect(195, 0, 58, 68));
+      if (TileMap[i][j] == 'h') s_map.setTextureRect(IntRect(130, 0, 62, 62));
+      if (TileMap[i][j] == 'e') s_map.setTextureRect(IntRect(0, 63, 70, 68));
+      if (TileMap[i][j] == 'a') s_map.setTextureRect(IntRect(72, 62, 69, 30));
+      if (TileMap[i][j] == 'b') s_map.setTextureRect(IntRect(403, 0, 66, 66));
 
       s_map.setPosition((float)j * 32, (float)i * 32);
       window.draw(s_map);
@@ -155,12 +205,17 @@ void draw_map(Sprite& s_map, RenderWindow& window, Sprite& simbasprite, Sprite& 
 }
 
 
+void run_1(RenderWindow& window);
+void run_2(RenderWindow& window);
+void run_3(RenderWindow& window);
+void prise(RenderWindow& window);
+
 //...........FIRST LEVEL................//
 
 void run_1(RenderWindow& window)
 {
 
-  Image map_image;      map_image.loadFromFile("../Images/first/map.png");
+  Image map_image;      map_image.loadFromFile("../Images/levels/map.png");
 
   Texture map;          map.loadFromImage(map_image);
 
@@ -168,7 +223,7 @@ void run_1(RenderWindow& window)
 
   //----------------------------------------------------! MAP!
 
-  Image simbaimg;       simbaimg.loadFromFile("../Images/first/simba.png");
+  Image simbaimg;       simbaimg.loadFromFile("../Images/levels/simba.png");
 
   Texture simbatexture; simbatexture.loadFromImage(simbaimg);
 
@@ -178,7 +233,7 @@ void run_1(RenderWindow& window)
 
 //----------------------------------------------------! SIMBA!
 
-  Image kovuimg;        kovuimg.loadFromFile("../Images/first/kovu.png");
+  Image kovuimg;        kovuimg.loadFromFile("../Images/levels/kovu.png");
 
   Texture kovutexture;  kovutexture.loadFromImage(kovuimg);
 
@@ -204,7 +259,8 @@ void run_1(RenderWindow& window)
 
 
     //! Key processing()
-    control(simbasprite, kovusprite, time, CurrentFrame);
+    control_kovu(kovusprite, time, CurrentFrame, TileMap1);
+    control_simba(simbasprite,time, CurrentFrame, TileMap1);
 
     //-------------------------------------------------------------------------------
 
@@ -213,7 +269,14 @@ void run_1(RenderWindow& window)
     //! Draw map 1!
 
     draw_map(s_map, window, simbasprite, kovusprite, TileMap1);
+
   }
+
+    /*
+  //-----------------WELL, MOVE ON TO THE SECOND LEVEL!---todo: transition condition
+  RenderWindow new_window(sf::VideoMode(1200, 675), "The Lion King Maze. Level 2");
+  window.close();
+  run_2(new_window); */
 }
 
 
@@ -222,7 +285,7 @@ void run_1(RenderWindow& window)
 
 void run_2(RenderWindow& window)
 {
-  Image map_image;      map_image.loadFromFile("../Images/first/map.png");
+  Image map_image;      map_image.loadFromFile("../Images/levels/map.png");
 
   Texture map;          map.loadFromImage(map_image);
 
@@ -230,7 +293,7 @@ void run_2(RenderWindow& window)
 
   //----------------------------------------------------! MAP!
 
-  Image simbaimg;       simbaimg.loadFromFile("../Images/first/simba.png");
+  Image simbaimg;       simbaimg.loadFromFile("../Images/levels/simba.png");
 
   Texture simbatexture; simbatexture.loadFromImage(simbaimg);
 
@@ -240,7 +303,7 @@ void run_2(RenderWindow& window)
 
   //----------------------------------------------------! SIMBA!
 
-  Image kovuimg;        kovuimg.loadFromFile("../Images/first/kovu.png");
+  Image kovuimg;        kovuimg.loadFromFile("../Images/levels/kovu.png");
 
   Texture kovutexture;  kovutexture.loadFromImage(kovuimg);
 
@@ -266,7 +329,8 @@ void run_2(RenderWindow& window)
 
 
     //! Key processing()
-    control(simbasprite, kovusprite, time, CurrentFrame);
+    control_kovu(kovusprite, time, CurrentFrame, TileMap2);
+    control_simba(simbasprite,time, CurrentFrame, TileMap2);
 
     //-------------------------------------------------------------------------------
 
@@ -275,6 +339,13 @@ void run_2(RenderWindow& window)
     //! Draw map 2!
 
     draw_map(s_map, window, simbasprite, kovusprite, TileMap2);
+
+
+    //-----------------WELL, MOVE ON TO THE THIRD LVEL!---todo: transition condition
+    /*
+    RenderWindow new_window(sf::VideoMode(1200, 675), "The Lion King Maze. Level 2");
+    window.close();
+    run_3(new_window); */
   }
 
 }
@@ -283,7 +354,7 @@ void run_2(RenderWindow& window)
 
 void run_3(RenderWindow& window)
 {
-  Image map_image;      map_image.loadFromFile("../Images/first/map.png");
+  Image map_image;      map_image.loadFromFile("../Images/levels/map.png");
 
   Texture map;          map.loadFromImage(map_image);
 
@@ -291,7 +362,7 @@ void run_3(RenderWindow& window)
 
   //----------------------------------------------------! MAP!
 
-  Image   simbaimg;     simbaimg.loadFromFile("../Images/first/simba.png");
+  Image   simbaimg;     simbaimg.loadFromFile("../Images/levels/simba.png");
 
   Texture simbatexture; simbatexture.loadFromImage(simbaimg);
 
@@ -301,7 +372,7 @@ void run_3(RenderWindow& window)
 
 //----------------------------------------------------! SIMBA!
 
-  Image   kovuimg;      kovuimg.loadFromFile("../Images/first/kovu.png");
+  Image   kovuimg;      kovuimg.loadFromFile("../Images/levels/kovu.png");
 
   Texture kovutexture;  kovutexture.loadFromImage(kovuimg);
 
@@ -328,7 +399,8 @@ void run_3(RenderWindow& window)
 
 
     //! Key processing()
-    control(simbasprite, kovusprite, time, CurrentFrame);
+    control_kovu(kovusprite, time, CurrentFrame, TileMap3);
+    control_simba(simbasprite,time, CurrentFrame, TileMap3);
 
     //-------------------------------------------------------------------------------
 
@@ -337,8 +409,35 @@ void run_3(RenderWindow& window)
     //! Draw map 3!
 
     draw_map(s_map, window, simbasprite, kovusprite, TileMap3);
-  }
 
+  /*
+    //-----------------WELL, MOVE ON TO THE PRISE!---todo: transition condition
+    RenderWindow new_window(sf::VideoMode(1200, 675), "PRISE  ");
+    window.close();
+    prise(new_window); */
+  }
+}
+
+void prise(RenderWindow& window)
+{
+  Image     back;             back.loadFromFile("../Images/levels/back.jpg");
+
+  Texture   backtexture;      backtexture.loadFromImage(back);
+
+  Sprite    backsprite;       backsprite.setTexture(backtexture);
+                              backsprite.setPosition(0, 0);
+
+  //------------------------------------------------------background
+
+  Image     congrat;          congrat.loadFromFile("../Images/levels/congrat.jpg");
+
+  Texture   congrattexture;   congrattexture.loadFromImage(congrat);
+
+  Sprite    congratsprite;    congratsprite.setTexture(congrattexture);
+                              congratsprite.setPosition(0, 0);
+
+  //------------------------------------------------------congratulation
+  window.close();
 }
 
 //..................................................//
@@ -348,19 +447,21 @@ void run_3(RenderWindow& window)
 
 void run_about(RenderWindow& window)
 {
-  Image     back;             back.loadFromFile("../Images/info/back.jpg");
+  Image     back;             back.loadFromFile("../Images/levels/back.jpg");
 
   Texture   backtexture;      backtexture.loadFromImage(back);
 
   Sprite    backsprite;       backsprite.setTexture(backtexture);
                               backsprite.setPosition(0, 0);
   //------------------------------------------------------background
-  Image     text;             text.loadFromFile("../Images/info/Text.jpg");
+
+  Image     text;             text.loadFromFile("../Images/levels/Text.jpg");
 
   Texture   texttexture;      texttexture.loadFromImage(text);
 
   Sprite    textsprite;       textsprite.setTexture(texttexture);
                               textsprite.setPosition(50, 50);
+
   //-------------------------------------------------------text
 
   while (window.isOpen())
