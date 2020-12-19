@@ -1,466 +1,526 @@
+#include <iostream>
+#include <cstdlib>
+
 #include <SFML/Graphics.hpp>
 #include "levels.h"
 using namespace sf;
 
-const int FIRST_LEVEL   = 1;
-const int SECOND_LEVEL  = 2;
-const int THIRD_LEVEL   = 3;
-const int INFO          = 4;
-const int EXIT          = 5;
+const int FIRST_LEVEL = 1;
+const int SECOND_LEVEL = 2;
+const int THIRD_LEVEL = 3;
+const int INFO = 4;
+const int EXIT = 5;
 
-const int RIGHT         = 6;
-const int LEFT          = 7;
-const int UP            = 8;
-const int DOWN          = 9;
-
-int direct_simba( )
-{
-  if (Keyboard::isKeyPressed(Keyboard::Right))
-    return RIGHT;
-  if (Keyboard::isKeyPressed(Keyboard::Left))
-    return LEFT;
-  if (Keyboard::isKeyPressed(Keyboard::Up))
-    return UP;
-  if (Keyboard::isKeyPressed(Keyboard::Down))
-    return DOWN;
-}
-
-int direct_kovu( )
-{
-  if (Keyboard::isKeyPressed(Keyboard::D))
-    return RIGHT;
-  if (Keyboard::isKeyPressed(Keyboard::A))
-    return LEFT;
-  if (Keyboard::isKeyPressed(Keyboard::W))
-    return UP;
-  if (Keyboard::isKeyPressed(Keyboard::S))
-    return DOWN;
-}
-
-
-
-void control_simba(Sprite& simbasprite, float time, float CurrentFrame, sf::String TileMap[])
-{
-  if ((Keyboard::isKeyPressed(Keyboard::Right)))
-  {
-    CurrentFrame += 0.005f * time;
-
-    if (CurrentFrame > 7) CurrentFrame -= 7;
-    simbasprite.setTextureRect(IntRect(47 * int(CurrentFrame), 245, 47, 47));
-
-    simbasprite.move(0.1f * time, 0);
-  }
-
-  if ((Keyboard::isKeyPressed(Keyboard::Left)))
-  {
-    CurrentFrame += 0.005f * time;
-    if (CurrentFrame > 7)
-      CurrentFrame -= 7;
-
-    simbasprite.setTextureRect(IntRect(47 * int(CurrentFrame + 1), 245, -47, 47));
-    simbasprite.move(-0.1f * time, 0);
-
-  }
-
-  if ((Keyboard::isKeyPressed(Keyboard::Up)))
-  {
-    CurrentFrame += 0.005f * time;
-    if (CurrentFrame > 2)
-      CurrentFrame -= 2;
-
-    simbasprite.setTextureRect(IntRect(43 * int(CurrentFrame), 330, 43, 43));
-    simbasprite.move(0, -0.1f * time);
-  }
-
-  if ((Keyboard::isKeyPressed(Keyboard::Down)))
-  {
-    CurrentFrame += 0.005f * time;
-
-    if (CurrentFrame > 2)
-      CurrentFrame -= 2;
-
-    simbasprite.setTextureRect(IntRect(330 * int(CurrentFrame), 330, 43, 43));
-    simbasprite.move(0, 0.1f * time);
-  }
-  for (int i = 0; i < WIDTH_MAP; ++i)
-    for (int j = 0 ; j < HEIGHT_MAP; ++j)
-    {
-      if (TileMap[i][j] == 'b')
-      {
-        int direction = direct_simba();
-
-        if (direction == DOWN)//если мы шли вниз,
-          simbasprite.move(0.1f * time, 0);//то стопорим координату игрек персонажа. сначала получаем координату нашего квадратика на карте(стены) и затем вычитаем из высоты спрайта персонажа.
-        if (direction == UP)
-          simbasprite.move(0.1f * time, 0);//аналогично с ходьбой вверх. dy<0, значит мы идем вверх (вспоминаем координаты паинта)
-        if (direction == RIGHT)
-          simbasprite.move(0, 0.1f* time);//если идем вправо, то координата Х равна стена (символ 0) минус ширина персонажа
-        if (direction == LEFT)
-          simbasprite.move(0, 0.1f * time);//аналогично идем влево
-      }
-
-      if (TileMap[i][j] == 'e')
-        TileMap[i][j] = 's'; //ИСПРАВИТЬ ТУТ НА ВЕРТ ЛАПЫ
-      if (TileMap[i][j] == 'a')
-        TileMap[i][j] = 's'; //ИСПРАВИТЬ ТУТ НА ГОРИЗОНТ ЛАПЫ
-    }
-}
-
-void control_kovu(Sprite& kovusprite, float time, float CurrentFrame, sf::String TileMap[])
-{
-  if ((Keyboard::isKeyPressed(Keyboard::D)))
-  {
-    CurrentFrame += 0.005f * time;
-
-    if (CurrentFrame > 6)
-      CurrentFrame -= 6;
-
-    kovusprite.setTextureRect(IntRect(62* int(CurrentFrame), 50, 62, 46));
-    kovusprite.move(0.1f * time, 0);
-
-  }
-
-  if ((Keyboard::isKeyPressed(Keyboard::A)))
-  {
-    CurrentFrame += 0.005f * time;
-
-    if (CurrentFrame > 6)
-      CurrentFrame -= 6;
-
-    kovusprite.setTextureRect(IntRect(62 * int(CurrentFrame + 1), 50, -62, 46));
-    kovusprite.move(-0.1f * time, 0);
-  }
-
-  if ((Keyboard::isKeyPressed(Keyboard::W)))
-  {
-
-    CurrentFrame += 0.005f * time;
-
-    if (CurrentFrame > 2)
-      CurrentFrame -= 2;
-
-    kovusprite.setTextureRect(IntRect(43 * int(CurrentFrame), 100, 43, 43));
-    kovusprite.move(0, -0.1f * time);
-  }
-
-  if ((Keyboard::isKeyPressed(Keyboard::S)))
-  {
-    CurrentFrame += 0.005f * time;
-
-    if (CurrentFrame > 2)
-      CurrentFrame -= 2;
-
-    kovusprite.setTextureRect(IntRect(43 * int(CurrentFrame), 100, 43, 43));
-    kovusprite.move(0, 0.1f * time);
-  }
-
-  for (int i = 0; i < WIDTH_MAP; ++i)
-    for (int j = 0 ; j < HEIGHT_MAP; ++j)
-    {
-      if (TileMap[i][j] == 'b')
-      {
-        int direction = direct_kovu();
-
-        if (direction == DOWN)//если мы шли вниз,
-          kovusprite.move(0.1f * time, 0);//то стопорим координату игрек персонажа. сначала получаем координату нашего квадратика на карте(стены) и затем вычитаем из высоты спрайта персонажа.
-        if (direction == UP)
-          kovusprite.move(0.1f * time, 0);//аналогично с ходьбой вверх. dy<0, значит мы идем вверх (вспоминаем координаты паинта)
-        if (direction == RIGHT)
-          kovusprite.move(0, 0.1f * time);//если идем вправо, то координата Х равна стена (символ 0) минус ширина персонажа
-        if (direction == LEFT)
-          kovusprite.move(0, 0.1f* time);//аналогично идем влево
-      }
-
-      if (TileMap[i][j] == 'e')
-        TileMap[i][j] = 's'; //ИСПРАВИТЬ ТУТ НА ВЕРТ ЛАПЫ
-      if (TileMap[i][j] == 'a')
-        TileMap[i][j] = 's'; //ИСПРАВИТЬ ТУТ НА ГОРИЗОНТ ЛАПЫ
-    }
-}
-
-
-//.................DRAWING MAP......................//
-
-void draw_map(Sprite& s_map, RenderWindow& window, Sprite& simbasprite, Sprite& kovusprite, sf::String TileMap[])
-{
-  for (int i = 0; i < HEIGHT_MAP; i++)
-    for (int j = 0; j < WIDTH_MAP; j++)
-    {
-      if (TileMap[i][j] == 's') s_map.setTextureRect(IntRect(332, 0, 68, 65));
-      if (TileMap[i][j] == ' ') s_map.setTextureRect(IntRect(255, 0, 73, 64));
-      if (TileMap[i][j] == 'l') s_map.setTextureRect(IntRect(0, 0, 65, 70));
-      if (TileMap[i][j] == 'd') s_map.setTextureRect(IntRect(195, 0, 58, 68));
-      if (TileMap[i][j] == 'h') s_map.setTextureRect(IntRect(130, 0, 62, 62));
-      if (TileMap[i][j] == 'e') s_map.setTextureRect(IntRect(0, 63, 70, 68));
-      if (TileMap[i][j] == 'a') s_map.setTextureRect(IntRect(72, 62, 69, 30));
-      if (TileMap[i][j] == 'b') s_map.setTextureRect(IntRect(403, 0, 66, 66));
-
-      s_map.setPosition((float)j * 32, (float)i * 32);
-      window.draw(s_map);
-    }
-
-  window.draw(simbasprite);
-  window.draw(kovusprite);
-  window.display();
-}
-
+const int RIGHT = 6;
+const int LEFT = 7;
+const int UP = 8;
+const int DOWN = 9;
 
 void run_1(RenderWindow& window);
 void run_2(RenderWindow& window);
 void run_3(RenderWindow& window);
-void prise(RenderWindow& window);
+void run_about(RenderWindow& window);
+
+struct Hero
+{
+  float a, b;
+  float x, y;
+  float w, h;
+  float dx = 0,
+    dy = 0,
+    speed = 0;
+
+  int direction = 0;
+  String File;
+  Image image;
+  Texture texture;
+  Sprite sprite;
+
+  Hero(String F, float X, float Y, float A, float B, float W, float H)
+  {
+    File = F;
+    image.loadFromFile("../Images/" + File);
+    texture.loadFromImage(image);
+    sprite.setTexture(texture);
+    x = X; y = Y;
+    a = A; b = B;
+    w = W; h = H;
+    sprite.setTextureRect(IntRect(a, b, w, h));
+  }
+
+  bool update(float time, String TileMap[], int* PATHS)
+  {
+    switch (direction)
+    {
+      case DOWN: dx = 0;
+        dy = speed;
+        break;
+
+      case UP:   dx = 0;
+        dy = -speed;
+        break;
+
+      case RIGHT:dx = speed;
+        dy = 0;
+        break;
+
+      case LEFT: dx = -speed;
+        dy = 0;
+        break;
+    }
+
+    x += dx * time;
+    y += dy * time;
+
+    speed = 0;
+    sprite.setPosition(x, y);
+    return interactionWithMap(TileMap, PATHS, time);
+  }
+
+  bool interactionWithMap(String TileMap[], int* PATHS, float time)
+  {
+    for (int i = y / 34; i < (y + h) / 34; ++i)
+      for (int j = x / 32; j < (x + w) / 32; ++j)
+
+        switch (TileMap[i][j])
+        {
+          case 'e':     TileMap[i][j] = 'p';
+            *PATHS -= 1;
+            break;
+
+          case 'a':     TileMap[i][j] = 'w';
+            *PATHS -= 1;
+            break;
+
+          case 'y':     if (*PATHS <= 0)
+            {
+              TileMap[i][j] = ' ';
+              return true;
+            }
+            break;
+
+          case 'x':     x -= dx * time;
+            y -= dy * time;
+            sprite.setPosition(x, y);
+            break;
+        }
+    return false;
+  }
+};
+
+struct NPC
+{
+  float a, b;
+  float x, y;
+  float w, h;
+  float dx = 0,
+    dy = 0,
+    speed = 0;
+
+  int direction = 0;
+  String File;
+  Image image;
+  Texture texture;
+  Sprite sprite;
+
+  NPC(String F, float X, float Y, float A, float B, float W, float H)
+  {
+    File = F;
+    image.loadFromFile("../Images/" + File);
+    texture.loadFromImage(image);
+    sprite.setTexture(texture);
+    x = X; y = Y;
+    a = A; b = B;
+    w = W; h = H;
+    sprite.setTextureRect(IntRect(a, b, w, h));
+  }
+
+  bool update(float time, String TileMap[], int* PATHS)
+  {
+    switch (direction)
+    {
+      case DOWN: dx = 0;
+        dy = speed;
+        break;
+
+      case UP:   dx = 0;
+        dy = -speed;
+        break;
+
+      case RIGHT:dx = speed;
+        dy = 0;
+        break;
+
+      case LEFT: dx = -speed;
+        dy = 0;
+        break;
+    }
+
+    x += dx * time;
+    y += dy * time;
+
+    speed = 0;
+    sprite.setPosition(x, y);
+    return interactionWithMap(TileMap, PATHS, time);
+  }
+
+  bool interactionWithMap(String TileMap[], int* PATHS, float time)
+  {
+    for (int i = y / 34; i < (y + h) / 34; ++i)
+      for (int j = x / 32; j < (x + w) / 32; ++j)
+        switch (TileMap[i][j])
+        {
+          case 'p':
+            TileMap[i][j] = 'e';
+            *PATHS += 1;
+            break;
+
+          case 'w':
+            TileMap[i][j] = 'a';
+            *PATHS += 1;
+            break;
+
+          case 'y':
+          case 'x':
+            x -= dx * time;
+            y -= dy * time;
+            sprite.setPosition(x, y);
+            break;
+
+          default:
+            break;
+        }
+    return false;
+  }
+};
+
+//-------------------------------------------------------------! MOVING SIMBA!
+bool control_simba(Hero& simba, float time, float& CurrentFrame, String TileMap[], int* PATHS)
+{
+  simba.speed = 0.2;
+  CurrentFrame += 0.005f * time;
+
+  if ((Keyboard::isKeyPressed(Keyboard::Right)))
+  {
+    simba.direction = RIGHT;
+    CurrentFrame = CurrentFrame > 7 ? 0 : CurrentFrame;
+    simba.sprite.setTextureRect(IntRect(51 * int(CurrentFrame), 244, 51, 51));
+  }
+  else if ((Keyboard::isKeyPressed(Keyboard::Left)))
+  {
+    simba.direction = LEFT;
+    CurrentFrame = CurrentFrame > 7 ? 0 : CurrentFrame;
+    simba.sprite.setTextureRect(IntRect(51 * int(CurrentFrame + 1), 244, -51, 51));
+  }
+  else if ((Keyboard::isKeyPressed(Keyboard::Up)))
+  {
+    simba.direction = UP;
+    CurrentFrame = CurrentFrame > 2 ? 0 : CurrentFrame;
+    simba.sprite.setTextureRect(IntRect(43 * int(CurrentFrame), 323, 43, 43));
+  }
+  else if ((Keyboard::isKeyPressed(Keyboard::Down)))
+  {
+    simba.direction = DOWN;
+    CurrentFrame = CurrentFrame > 2 ? 0 : CurrentFrame;
+    simba.sprite.setTextureRect(IntRect(43 * int(CurrentFrame), 323, 43, 43));
+  }
+  else
+    simba.speed = 0;
+
+  return simba.update(time, TileMap, PATHS);
+}
+
+//-------------------------------------------------------------! MOVING KOVU!
+
+bool control_kovu(Hero& kovu, float time, float& CurrentFrame, String TileMap[], int* PATHS)
+{
+  kovu.speed = 0.2;
+  CurrentFrame += 0.005f * time;
+
+  if (Keyboard::isKeyPressed(Keyboard::D))
+  {
+    kovu.direction = RIGHT;
+    CurrentFrame = CurrentFrame > 6 ? 0 : CurrentFrame;
+    kovu.sprite.setTextureRect(IntRect(67 * int(CurrentFrame), 50, 67, 50));
+  }
+  else if (Keyboard::isKeyPressed(Keyboard::A))
+  {
+    kovu.direction = LEFT;
+    CurrentFrame = CurrentFrame > 6 ? 0 : CurrentFrame;
+    kovu.sprite.setTextureRect(IntRect(66 * int(CurrentFrame + 1), 50, -65, 50));
+  }
+  else if (Keyboard::isKeyPressed(Keyboard::W))
+  {
+    kovu.direction = UP;
+    CurrentFrame = CurrentFrame > 2 ? 0 : CurrentFrame;
+    kovu.sprite.setTextureRect(IntRect(43 * int(CurrentFrame), 100, 43, 43));
+  }
+  else if (Keyboard::isKeyPressed(Keyboard::S))
+  {
+    kovu.direction = DOWN;
+    CurrentFrame = CurrentFrame > 2 ? 0 : CurrentFrame;
+    kovu.sprite.setTextureRect(IntRect(43 * int(CurrentFrame), 100, 43, 43));
+  }
+  else
+    kovu.speed = 0;
+
+  return (kovu.update(time, TileMap, PATHS));
+}
+
+bool control_pumba(NPC& npc, float time, float& CurrentFrame, int dir, String TileMap[], int* PATHS)
+{
+  npc.direction = dir;
+  npc.speed = 0.06;
+  CurrentFrame += 0.1f * time;
+
+  CurrentFrame = CurrentFrame > 5 ? 0 : CurrentFrame;
+
+  switch (dir)
+  {
+    case UP:
+    case RIGHT: npc.sprite.setTextureRect(IntRect(38 * int(CurrentFrame) + 6, 150, 40, 40));
+      break;
+
+    case DOWN:
+    case LEFT: npc.sprite.setTextureRect(IntRect(38 * int(CurrentFrame + 1) + 6, 150, -40, 40));
+      break;
+  }
+
+  return (npc.update(time, TileMap, PATHS));
+}
+
+bool control_timon(NPC& npc, float time, float& CurrentFrame, int dir, String TileMap[], int* PATHS)
+{
+  npc.direction = dir;
+  npc.speed = 0.15;
+  CurrentFrame += 0.1f * time;
+
+  CurrentFrame = CurrentFrame > 9 ? 0 : CurrentFrame;
+
+  switch (dir)
+  {
+    case UP:
+    case RIGHT: npc.sprite.setTextureRect(IntRect(37 * int(CurrentFrame) + 360, 600, 37, 51));
+      break;
+    case DOWN:
+    case LEFT:  npc.sprite.setTextureRect(IntRect(37 * int(CurrentFrame + 1) + 360, 600, -37, 51));
+      break;
+    default:    break;
+  }
+
+  return (npc.update(time, TileMap, PATHS));
+}
+
+
+//.................DRAWING MAP......................//
+void draw_map(Sprite& s_map, RenderWindow& window, Hero& simba, Hero& kovu, Sprite& pumbasprite,
+              Sprite& timonsprite, String TileMap[])
+{
+  for (int i = 0; i < HEIGHT_MAP; i++)
+    for (int j = 0; j < WIDTH_MAP; j++)
+    {
+      switch (TileMap[i][j])
+      {
+        case ' ':s_map.setTextureRect(IntRect(143, 35, 33, 34)); break;
+        case 'l':s_map.setTextureRect(IntRect(0, 35, 33, 34)); break;
+        case 'p':s_map.setTextureRect(IntRect(243, 3, 33, 34)); break;
+        case 'w':s_map.setTextureRect(IntRect(210, 3, 33, 34)); break;
+        case 'd':s_map.setTextureRect(IntRect(108, 35, 33, 34)); break;
+        case 'e':s_map.setTextureRect(IntRect(174, 35, 33, 34)); break;
+        case 'a':s_map.setTextureRect(IntRect(242, 35, 33, 34)); break;
+        case 'h':
+        case 'y':s_map.setTextureRect(IntRect(74, 35, 33, 34)); break;
+        case 'b':
+        case 'x':s_map.setTextureRect(IntRect(208, 35, 33, 34)); break;
+      }
+      s_map.setPosition((float)j * 32, (float)i * 32);
+      window.draw(s_map);
+    }
+
+  window.draw(simba.sprite);
+  window.draw(kovu.sprite);
+  window.draw(pumbasprite);
+  window.draw(timonsprite);
+  window.display();
+}
+
 
 //...........FIRST LEVEL................//
 
 void run_1(RenderWindow& window)
 {
-
-  Image map_image;      map_image.loadFromFile("../Images/levels/map.png");
-
+  Image map_image;      map_image.loadFromFile("../Images/map.png");
   Texture map;          map.loadFromImage(map_image);
-
   Sprite s_map;         s_map.setTexture(map);
 
-  //----------------------------------------------------! MAP!
+  Hero simba("../Images/characters/simba.png", 710, 360, 0, 25, 44, 51);
+  Hero kovu("../Images/characters/kovu.png", 430, 360, 0, 200, 43, 53);
 
-  Image simbaimg;       simbaimg.loadFromFile("../Images/levels/simba.png");
-
-  Texture simbatexture; simbatexture.loadFromImage(simbaimg);
-
-  Sprite simbasprite;   simbasprite.setTexture(simbatexture);
-                        simbasprite.setTextureRect(IntRect(0, 25, 40, 53));
-                        simbasprite.setPosition(250, 250);
-
-//----------------------------------------------------! SIMBA!
-
-  Image kovuimg;        kovuimg.loadFromFile("../Images/levels/kovu.png");
-
-  Texture kovutexture;  kovutexture.loadFromImage(kovuimg);
-
-  Sprite kovusprite;    kovusprite.setTexture(kovutexture);
-                        kovusprite.setTextureRect(IntRect(0, 200, 43, 53));
-                        kovusprite.setPosition(200, 200);
-
-//------------------------------------------------------! KOVU!
+  NPC pumba("../Images/characters/pumba.png", 500, 250, 0, 500, 42, 58);
+  NPC timon("../Images/characters/timon.png", 500, 360, 0, 500, 4, 66);
 
   float CurrentFrame = 0;
   Clock clock;
 
+  int counter = 0;
+  int dir_pumba = DOWN;
+  int dir_timon = UP;
   while (window.isOpen())
   {
+    ++counter;
     float time = clock.getElapsedTime().asMicroseconds();
     clock.restart();
     time = time / 800;
 
-    sf::Event event;
+    Event event;
     while (window.pollEvent(event))
-      if (event.type == sf::Event::Closed || Keyboard::isKeyPressed(Keyboard::Escape))
+      if (event.type == Event::Closed || Keyboard::isKeyPressed(Keyboard::Escape))
         window.close();
 
+    if(control_simba(simba, time, CurrentFrame, TileMap1, &PATHS_1) ||
+       control_kovu(kovu, time, CurrentFrame, TileMap1, &PATHS_1))
+    {
+      RenderWindow new_window(VideoMode(1200, 675), "The Lion King Maze. Level 2");
+      window.close();
+      run_2(new_window);
+      return;
+    }
 
-    //! Key processing()
-    control_kovu(kovusprite, time, CurrentFrame, TileMap1);
-    control_simba(simbasprite,time, CurrentFrame, TileMap1);
+    if (counter % 700 == 0)
+    {
+      dir_pumba = std::rand() % 4 + 6;
+      dir_timon = std::rand() % 4 + 6;
+    }
+    control_pumba(pumba, time, CurrentFrame, dir_pumba, TileMap1, &PATHS_1);
+    control_timon(timon, time, CurrentFrame, dir_timon, TileMap1, &PATHS_1);
 
     //-------------------------------------------------------------------------------
-
     window.clear();
-
-    //! Draw map 1!
-
-    draw_map(s_map, window, simbasprite, kovusprite, TileMap1);
-
+    draw_map(s_map, window, simba, kovu, pumba.sprite, timon.sprite, TileMap1);
   }
-
-    /*
-  //-----------------WELL, MOVE ON TO THE SECOND LEVEL!---todo: transition condition
-  RenderWindow new_window(sf::VideoMode(1200, 675), "The Lion King Maze. Level 2");
-  window.close();
-  run_2(new_window); */
 }
-
 
 
 //...............SECOND LEVEL................//
-
 void run_2(RenderWindow& window)
 {
-  Image map_image;      map_image.loadFromFile("../Images/levels/map.png");
-
+  Image map_image;      map_image.loadFromFile("../Images/map.png");
   Texture map;          map.loadFromImage(map_image);
-
   Sprite s_map;         s_map.setTexture(map);
 
-  //----------------------------------------------------! MAP!
+  Hero simba("../Images/characters/simba.png", 400, 150, 0, 25, 44, 51);
+  Hero kovu("../Images/characters/kovu.png", 550, 150, 0, 200, 43, 53);
 
-  Image simbaimg;       simbaimg.loadFromFile("../Images/levels/simba.png");
-
-  Texture simbatexture; simbatexture.loadFromImage(simbaimg);
-
-  Sprite simbasprite;   simbasprite.setTexture(simbatexture);
-                        simbasprite.setTextureRect(IntRect(0, 180, 38, 38));
-                        simbasprite.setPosition(250, 250);
-
-  //----------------------------------------------------! SIMBA!
-
-  Image kovuimg;        kovuimg.loadFromFile("../Images/levels/kovu.png");
-
-  Texture kovutexture;  kovutexture.loadFromImage(kovuimg);
-
-  Sprite kovusprite;    kovusprite.setTexture(kovutexture);
-                        kovusprite.setTextureRect(IntRect(0, 0, 38, 38));
-                        kovusprite.setPosition(200, 200);
-
-  //------------------------------------------------------! KOVU!
+  NPC pumba("../Images/characters/pumba.png", 500, 250, 0, 500, 42, 58);
+  NPC timon("../Images/characters/timon.png", 500, 360, 0, 500, 4, 66);
 
   float CurrentFrame = 0;
   Clock clock;
 
+  int counter = 0;
+  int dir_pumba = LEFT;
+  int dir_timon = RIGHT;
+
   while (window.isOpen())
   {
+    ++counter;
     float time = clock.getElapsedTime().asMicroseconds();
     clock.restart();
     time = time / 800;
 
-    sf::Event event;
+    Event event;
     while (window.pollEvent(event))
-      if (event.type == sf::Event::Closed || Keyboard::isKeyPressed(Keyboard::Escape))
+      if (event.type == Event::Closed || Keyboard::isKeyPressed(Keyboard::Escape))
         window.close();
 
+    if(control_simba(simba, time, CurrentFrame, TileMap2, &PATHS_2) ||
+       control_kovu(kovu, time, CurrentFrame, TileMap2, &PATHS_2))
+    {
+      RenderWindow new_window(VideoMode(1200, 675), "The Lion King Maze. Level 3");
+      window.close();
+      run_3(new_window);
+    }
 
-    //! Key processing()
-    control_kovu(kovusprite, time, CurrentFrame, TileMap2);
-    control_simba(simbasprite,time, CurrentFrame, TileMap2);
-
-    //-------------------------------------------------------------------------------
+    if (counter % 1000 == 0)
+    {
+      dir_pumba = std::rand() % 4 + 6;
+      dir_timon = std::rand() % 4 + 6;
+    }
+    control_pumba(pumba, time, CurrentFrame, dir_pumba, TileMap2, &PATHS_2);
+    control_timon(timon, time, CurrentFrame, dir_timon, TileMap2, &PATHS_2);
 
     window.clear();
-
-    //! Draw map 2!
-
-    draw_map(s_map, window, simbasprite, kovusprite, TileMap2);
-
-
-    //-----------------WELL, MOVE ON TO THE THIRD LVEL!---todo: transition condition
-    /*
-    RenderWindow new_window(sf::VideoMode(1200, 675), "The Lion King Maze. Level 2");
-    window.close();
-    run_3(new_window); */
+    draw_map(s_map, window, simba, kovu, pumba.sprite, timon.sprite, TileMap2);
   }
-
 }
 
 //...........THIRD LEVEL............//
-
 void run_3(RenderWindow& window)
 {
-  Image map_image;      map_image.loadFromFile("../Images/levels/map.png");
-
+  Image map_image;      map_image.loadFromFile("../Images/map.png");
   Texture map;          map.loadFromImage(map_image);
-
   Sprite s_map;         s_map.setTexture(map);
 
-  //----------------------------------------------------! MAP!
+  Hero simba("../Images/characters/simba.png", 1000, 125, 0, 25, 44, 51);
+  Hero kovu("../Images/characters/kovu.png", 100, 570, 0, 200, 43, 53);
 
-  Image   simbaimg;     simbaimg.loadFromFile("../Images/levels/simba.png");
-
-  Texture simbatexture; simbatexture.loadFromImage(simbaimg);
-
-  Sprite  simbasprite;  simbasprite.setTexture(simbatexture);
-                        simbasprite.setTextureRect(IntRect(0, 180, 38, 38));
-                        simbasprite.setPosition(250, 250);
-
-//----------------------------------------------------! SIMBA!
-
-  Image   kovuimg;      kovuimg.loadFromFile("../Images/levels/kovu.png");
-
-  Texture kovutexture;  kovutexture.loadFromImage(kovuimg);
-
-  Sprite  kovusprite;   kovusprite.setTexture(kovutexture);
-                        kovusprite.setTextureRect(IntRect(0, 0, 38, 38));
-                        kovusprite.setPosition(200, 200);
+  NPC pumba("../Images/characters/pumba.png", 500, 250, 0, 500, 42, 58);
+  NPC timon("../Images/characters/timon.png", 500, 360, 0, 500, 4, 66);
 
   float CurrentFrame = 0;
   Clock clock;
 
-//------------------------------------------------------! KOVU!
+  int counter = 0;
+  int dir_pumba = LEFT;
+  int dir_timon = RIGHT;
 
   while (window.isOpen())
   {
-
+    ++counter;
     float time = clock.getElapsedTime().asMicroseconds();
     clock.restart();
-    time = time / 800;
+    time = time / 600;
 
-    sf::Event event;
+    Event event;
     while (window.pollEvent(event))
-      if (event.type == sf::Event::Closed || Keyboard::isKeyPressed(Keyboard::Escape))
+      if (event.type == Event::Closed || Keyboard::isKeyPressed(Keyboard::Escape))
         window.close();
 
+    if(control_simba(simba, time, CurrentFrame, TileMap3, &PATHS_3) ||
+       control_kovu(kovu, time, CurrentFrame, TileMap3, &PATHS_3))
+    {
+      RenderWindow new_window(VideoMode(1600, 900), "The Lion King Maze Info");
+      window.close();
+      run_about(new_window);
+    }
 
-    //! Key processing()
-    control_kovu(kovusprite, time, CurrentFrame, TileMap3);
-    control_simba(simbasprite,time, CurrentFrame, TileMap3);
-
-    //-------------------------------------------------------------------------------
+    if (counter % 1500 == 0)
+    {
+      dir_pumba = std::rand() % 4 + 6;
+      dir_timon = std::rand() % 4 + 6;
+    }
+    control_pumba(pumba, time, CurrentFrame, dir_pumba, TileMap3, &PATHS_3);
+    control_timon(timon, time, CurrentFrame, dir_timon, TileMap3, &PATHS_3);
 
     window.clear();
-
-    //! Draw map 3!
-
-    draw_map(s_map, window, simbasprite, kovusprite, TileMap3);
-
-  /*
-    //-----------------WELL, MOVE ON TO THE PRISE!---todo: transition condition
-    RenderWindow new_window(sf::VideoMode(1200, 675), "PRISE  ");
-    window.close();
-    prise(new_window); */
+    draw_map(s_map, window, simba, kovu, pumba.sprite, timon.sprite, TileMap3);
   }
 }
 
-void prise(RenderWindow& window)
-{
-  Image     back;             back.loadFromFile("../Images/levels/back.jpg");
-
-  Texture   backtexture;      backtexture.loadFromImage(back);
-
-  Sprite    backsprite;       backsprite.setTexture(backtexture);
-                              backsprite.setPosition(0, 0);
-
-  //------------------------------------------------------background
-
-  Image     congrat;          congrat.loadFromFile("../Images/levels/congrat.jpg");
-
-  Texture   congrattexture;   congrattexture.loadFromImage(congrat);
-
-  Sprite    congratsprite;    congratsprite.setTexture(congrattexture);
-                              congratsprite.setPosition(0, 0);
-
-  //------------------------------------------------------congratulation
-  window.close();
-}
-
-//..................................................//
 //......................ABOUT.......................//
-//..................................................//
-
-
 void run_about(RenderWindow& window)
 {
-  Image     back;             back.loadFromFile("../Images/levels/back.jpg");
-
+  Image     back;             back.loadFromFile("../Images/info/back.jpg");
   Texture   backtexture;      backtexture.loadFromImage(back);
-
   Sprite    backsprite;       backsprite.setTexture(backtexture);
-                              backsprite.setPosition(0, 0);
+  backsprite.setPosition(0, 0);
+
   //------------------------------------------------------background
 
-  Image     text;             text.loadFromFile("../Images/levels/Text.jpg");
-
+  Image     text;             text.loadFromFile("../Images/info/Text.jpg");
   Texture   texttexture;      texttexture.loadFromImage(text);
-
   Sprite    textsprite;       textsprite.setTexture(texttexture);
-                              textsprite.setPosition(50, 50);
+  textsprite.setPosition(70, 50);
 
   //-------------------------------------------------------text
 
@@ -478,72 +538,54 @@ void run_about(RenderWindow& window)
     window.draw(backsprite);
     window.draw(textsprite);
     window.display();
-
   }
 }
 
-
-//..................................................//
 //.......................MENU.......................//
-//..................................................//
-
-
 void menu(RenderWindow& window)
 {
   Image     icon;               icon.loadFromFile("../Images/icon.jpg");
-                                window.setIcon(100, 70, icon.getPixelsPtr());
+  window.setIcon(100, 70, icon.getPixelsPtr());
 
   //-----------------------------------------------------icon made
 
-  Image     menubackground;     menubackground.loadFromFile("../Images/menu.jpg");
-
+  Image     menubackground;     menubackground.loadFromFile("../Images/menu/menu.jpg");
   Texture   menutexture;        menutexture.loadFromImage(menubackground);
-
   Sprite    menusprite;         menusprite.setTexture(menutexture);
                                 menusprite.setPosition(0, 0);
 
   //-------------------------------------------------background made
 
-  Image     level1;             level1.loadFromFile("../Images/level1.png");
-
+  Image     level1;             level1.loadFromFile("../Images/menu/level1.png");
   Texture   level1texture;      level1texture.loadFromImage(level1);
-
   Sprite    level1sprite;       level1sprite.setTexture(level1texture);
                                 level1sprite.setPosition(325, 375);
 
   //------------------------------------------------first level made
 
-  Image     level2;             level2.loadFromFile("../Images/level2.png");
-
+  Image     level2;             level2.loadFromFile("../Images/menu/level2.png");
   Texture   level2texture;      level2texture.loadFromImage(level2);
-
   Sprite    level2sprite;       level2sprite.setTexture(level2texture);
                                 level2sprite.setPosition(625, 375);
 
   //------------------------------------------------second level made
 
-  Image     level3;             level3.loadFromFile("../Images/level3.png");
-
+  Image     level3;             level3.loadFromFile("../Images/menu/level3.png");
   Texture   level3texture;      level3texture.loadFromImage(level3);
-
   Sprite    level3sprite;       level3sprite.setTexture(level3texture);
                                 level3sprite.setPosition(325, 520);
 
   //------------------------------------------------third level made
 
-  Image     exitgame;           exitgame.loadFromFile("../Images/exit.png");
-
+  Image     exitgame;           exitgame.loadFromFile("../Images/menu/exit.png");
   Texture   exitgametexture;    exitgametexture.loadFromImage(exitgame);
-
   Sprite    exitgamesprite;     exitgamesprite.setTexture(exitgametexture);
                                 exitgamesprite.setPosition(625, 520);
 
   //-------------------------------------------------exit made
 
-  Image     info;           info.loadFromFile("../Images/about.png");
-
+  Image     info;           info.loadFromFile("../Images/menu/about.png");
   Texture   infotexture;    infotexture.loadFromImage(info);
-
   Sprite    infosprite;     infosprite.setTexture(infotexture);
                             infosprite.setPosition(1100, 10);
 
@@ -578,33 +620,35 @@ void menu(RenderWindow& window)
     {
       switch (menuNum)
       {
-        case FIRST_LEVEL: { RenderWindow new_window(sf::VideoMode(1200, 675), "The Lion King Maze. Level 1");
-                            window.close();
-                            run_1(new_window);
-                            break;                                                                           }
+        case FIRST_LEVEL: { RenderWindow new_window(VideoMode(1200, 675), "The Lion King Maze. Level 1");
+          window.close();
+          run_1(new_window);
+          break;                                                                           }
 
-        case SECOND_LEVEL: { RenderWindow new_window(sf::VideoMode(1200, 675), "The Lion King Maze. Level 2");
-                            window.close();
-                            run_2(new_window);
-                            break;                                                                           }
+        case SECOND_LEVEL:{ RenderWindow new_window(VideoMode(1200, 675), "The Lion King Maze. Level 2");
+          window.close();
+          run_2(new_window);
+          break;                                                                           }
 
-        case THIRD_LEVEL: { RenderWindow new_window(sf::VideoMode(1200, 675), "The Lion King Maze. Level 3");
-                            window.close();
-                            run_3(new_window);
-                            break;                                                                           }
+        case THIRD_LEVEL: { RenderWindow new_window(VideoMode(1200, 675), "The Lion King Maze. Level 3");
+          window.close();
+          run_3(new_window);
+          break;                                                                           }
 
-        case INFO: { RenderWindow new_window(sf::VideoMode(1600, 900), "The Lion King Maze Info");
-                            window.close();
-                            run_about(new_window);
-                            break;                                                                           }
+        case INFO:        { RenderWindow new_window(VideoMode(1600, 900), "The Lion King Maze Info");
+          window.close();
+          run_about(new_window);
+          break;                                                                           }
 
         case EXIT:          window.close();
-                            break;
+          break;
+
+        default:            break;
       }
 
       if (menuNum >= FIRST_LEVEL && menuNum <= INFO)
       {
-        RenderWindow after_window(sf::VideoMode(1200, 675), "The Lion King Maze");
+        RenderWindow after_window(VideoMode(1200, 675), "The Lion King Maze");
         menu(after_window);
       }
     }
@@ -623,7 +667,6 @@ void menu(RenderWindow& window)
 
 int main()
 {
-
   RenderWindow window(VideoMode(1200, 675), "The Lion King Maze");
   menu(window);
 
