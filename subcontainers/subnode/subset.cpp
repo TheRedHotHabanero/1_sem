@@ -62,16 +62,12 @@ bool remove(subset_node** sn, int k) //удаление элемента из д
     return false;
 
   //if (node->right == nullptr && node->parent != nullptr)
-
-
-
 }
 
 uint size(subset_node* sn) //количество элементов в дереве
 {
   if (sn == nullptr)
     return 0;
-
   return (1 + size(sn->right) + size(sn->left)); //сумма по ветке справа, слева и еще сам элемент
 }
 
@@ -79,7 +75,6 @@ uint height(subset_node* sn) //высота дерева
 {
   if (sn == nullptr)
     return 0;
-
   return (1 + max(size(sn->right), size(sn->left)));
 }
 
@@ -121,6 +116,7 @@ subset_node* merge(subset_node *sn1, subset_node *sn2) //слияние двух
 
 }
 */
+
 /*
 int main( )
 {
